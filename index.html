@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>final.ipynb</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #cf8e6d;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+.ls0 { height: 1px; border-width: 0; color: #43454a; background-color:#43454a}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+final.ipynb</font>
+</center></td></tr></table>
+<pre><span class="s0">#%% 
+</span><span class="s1">import </span><span class="s0">pandas </span><span class="s1">as </span><span class="s0">pd</span>
+<span class="s1">import </span><span class="s0">numpy </span><span class="s1">as </span><span class="s0">np</span>
+<span class="s1">import </span><span class="s0">matplotlib</span><span class="s2">.</span><span class="s0">pyplot </span><span class="s1">as </span><span class="s0">plt</span>
+<span class="s1">import </span><span class="s0">seaborn </span><span class="s1">as </span><span class="s0">sns</span>
+<span class="s1">import </span><span class="s0">plotly</span><span class="s2">.</span><span class="s0">express </span><span class="s1">as </span><span class="s0">px</span>
+
+<span class="s1">try</span><span class="s2">:</span>
+    <span class="s0">df </span><span class="s2">= </span><span class="s0">pd</span><span class="s2">.</span><span class="s0">read_csv</span><span class="s2">(</span><span class="s3">&quot;owid-covid-data.csv&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;Data loaded successfully.</span><span class="s1">\n</span><span class="s3">&quot;</span><span class="s2">)</span>
+<span class="s1">except </span><span class="s0">FileNotFoundError</span><span class="s2">:</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;File not found. Please check the file path.&quot;</span><span class="s2">)</span>
+    <span class="s0">df </span><span class="s2">= </span><span class="s1">None</span>
+
+<span class="s1">if </span><span class="s0">df </span><span class="s1">is not None</span><span class="s2">:</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot; Dataset columns:&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s0">df</span><span class="s2">.</span><span class="s0">columns</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s1">\n </span><span class="s3">Preview of data:&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s0">df</span><span class="s2">.</span><span class="s0">head</span><span class="s2">())</span>
+
+    <span class="s0">countries </span><span class="s2">= [</span><span class="s3">'Tanzania'</span><span class="s2">, </span><span class="s3">'China'</span><span class="s2">, </span><span class="s3">'India'</span><span class="s2">]</span>
+    <span class="s0">df </span><span class="s2">= </span><span class="s0">df</span><span class="s2">[</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Country/Region'</span><span class="s2">].</span><span class="s0">isin</span><span class="s2">(</span><span class="s0">countries</span><span class="s2">)]</span>
+
+    <span class="s0">df</span><span class="s2">[</span><span class="s3">'date'</span><span class="s2">] = </span><span class="s0">pd</span><span class="s2">.</span><span class="s0">to_datetime</span><span class="s2">(</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Date'</span><span class="s2">])</span>
+    <span class="s0">df</span><span class="s2">.</span><span class="s0">fillna</span><span class="s2">(</span><span class="s4">0</span><span class="s2">, </span><span class="s0">inplace</span><span class="s2">=</span><span class="s1">True</span><span class="s2">)</span>
+
+    <span class="s0">df</span><span class="s2">[</span><span class="s3">'death_rate'</span><span class="s2">] = </span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Deaths'</span><span class="s2">] / </span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Confirmed'</span><span class="s2">]</span>
+    <span class="s0">df</span><span class="s2">[</span><span class="s3">'death_rate'</span><span class="s2">] = </span><span class="s0">df</span><span class="s2">[</span><span class="s3">'death_rate'</span><span class="s2">].</span><span class="s0">replace</span><span class="s2">([</span><span class="s0">np</span><span class="s2">.</span><span class="s0">inf</span><span class="s2">, -</span><span class="s0">np</span><span class="s2">.</span><span class="s0">inf</span><span class="s2">], </span><span class="s4">0</span><span class="s2">)</span>
+
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s1">\n </span><span class="s3">Summary Statistics:&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s0">df</span><span class="s2">.</span><span class="s0">describe</span><span class="s2">())</span>
+
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s1">\n </span><span class="s3">Mean values grouped by country:&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s0">df</span><span class="s2">.</span><span class="s0">groupby</span><span class="s2">(</span><span class="s3">'Country/Region'</span><span class="s2">)[[</span><span class="s3">'Confirmed'</span><span class="s2">, </span><span class="s3">'Deaths'</span><span class="s2">, </span><span class="s3">'Recovered'</span><span class="s2">]].</span><span class="s0">mean</span><span class="s2">())</span>
+
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">figure</span><span class="s2">(</span><span class="s0">figsize</span><span class="s2">=(</span><span class="s4">12</span><span class="s2">, </span><span class="s4">6</span><span class="s2">))</span>
+    <span class="s1">for </span><span class="s0">country </span><span class="s1">in </span><span class="s0">countries</span><span class="s2">:</span>
+        <span class="s0">country_data </span><span class="s2">= </span><span class="s0">df</span><span class="s2">[</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Country/Region'</span><span class="s2">] == </span><span class="s0">country</span><span class="s2">]</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">plot</span><span class="s2">(</span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'date'</span><span class="s2">], </span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'Confirmed'</span><span class="s2">], </span><span class="s0">label</span><span class="s2">=</span><span class="s0">country</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">title</span><span class="s2">(</span><span class="s3">'Total COVID-19 Cases Over Time'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">xlabel</span><span class="s2">(</span><span class="s3">'Date'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">ylabel</span><span class="s2">(</span><span class="s3">'Total Cases'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">legend</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">tight_layout</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">show</span><span class="s2">()</span>
+
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">figure</span><span class="s2">(</span><span class="s0">figsize</span><span class="s2">=(</span><span class="s4">8</span><span class="s2">, </span><span class="s4">6</span><span class="s2">))</span>
+    <span class="s0">total_cases_by_country </span><span class="s2">= </span><span class="s0">df</span><span class="s2">.</span><span class="s0">groupby</span><span class="s2">(</span><span class="s3">'Country/Region'</span><span class="s2">)[</span><span class="s3">'Confirmed'</span><span class="s2">].</span><span class="s0">max</span><span class="s2">()</span>
+    <span class="s0">total_cases_by_country</span><span class="s2">.</span><span class="s0">plot</span><span class="s2">(</span><span class="s0">kind</span><span class="s2">=</span><span class="s3">'bar'</span><span class="s2">, </span><span class="s0">color</span><span class="s2">=[</span><span class="s3">'skyblue'</span><span class="s2">, </span><span class="s3">'salmon'</span><span class="s2">, </span><span class="s3">'limegreen'</span><span class="s2">])</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">title</span><span class="s2">(</span><span class="s3">'Max Total Cases by Country'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">xlabel</span><span class="s2">(</span><span class="s3">'Country'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">ylabel</span><span class="s2">(</span><span class="s3">'Total Cases'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">tight_layout</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">show</span><span class="s2">()</span>
+
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">figure</span><span class="s2">(</span><span class="s0">figsize</span><span class="s2">=(</span><span class="s4">12</span><span class="s2">, </span><span class="s4">6</span><span class="s2">))</span>
+    <span class="s1">for </span><span class="s0">country </span><span class="s1">in </span><span class="s0">countries</span><span class="s2">:</span>
+        <span class="s0">country_data </span><span class="s2">= </span><span class="s0">df</span><span class="s2">[</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Country/Region'</span><span class="s2">] == </span><span class="s0">country</span><span class="s2">]</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">plot</span><span class="s2">(</span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'date'</span><span class="s2">], </span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'Deaths'</span><span class="s2">], </span><span class="s0">label</span><span class="s2">=</span><span class="s0">country</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">title</span><span class="s2">(</span><span class="s3">'Total COVID-19 Deaths Over Time'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">xlabel</span><span class="s2">(</span><span class="s3">'Date'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">ylabel</span><span class="s2">(</span><span class="s3">'Total Deaths'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">legend</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">tight_layout</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">show</span><span class="s2">()</span>
+
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">figure</span><span class="s2">(</span><span class="s0">figsize</span><span class="s2">=(</span><span class="s4">12</span><span class="s2">, </span><span class="s4">6</span><span class="s2">))</span>
+    <span class="s1">for </span><span class="s0">country </span><span class="s1">in </span><span class="s0">countries</span><span class="s2">:</span>
+        <span class="s0">country_data </span><span class="s2">= </span><span class="s0">df</span><span class="s2">[</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Country/Region'</span><span class="s2">] == </span><span class="s0">country</span><span class="s2">]</span>
+        <span class="s0">new_cases </span><span class="s2">= </span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'Confirmed'</span><span class="s2">].</span><span class="s0">diff</span><span class="s2">().</span><span class="s0">fillna</span><span class="s2">(</span><span class="s4">0</span><span class="s2">)</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">plot</span><span class="s2">(</span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'date'</span><span class="s2">], </span><span class="s0">new_cases</span><span class="s2">, </span><span class="s0">label</span><span class="s2">=</span><span class="s0">country</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">title</span><span class="s2">(</span><span class="s3">'Daily New Cases Comparison'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">xlabel</span><span class="s2">(</span><span class="s3">'Date'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">ylabel</span><span class="s2">(</span><span class="s3">'New Cases'</span><span class="s2">)</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">legend</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">tight_layout</span><span class="s2">()</span>
+    <span class="s0">plt</span><span class="s2">.</span><span class="s0">show</span><span class="s2">()</span>
+
+    <span class="s1">if </span><span class="s3">'total_vaccinations' </span><span class="s1">in </span><span class="s0">df</span><span class="s2">.</span><span class="s0">columns </span><span class="s1">and </span><span class="s3">'Population' </span><span class="s1">in </span><span class="s0">df</span><span class="s2">.</span><span class="s0">columns</span><span class="s2">:</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">figure</span><span class="s2">(</span><span class="s0">figsize</span><span class="s2">=(</span><span class="s4">12</span><span class="s2">, </span><span class="s4">6</span><span class="s2">))</span>
+        <span class="s1">for </span><span class="s0">country </span><span class="s1">in </span><span class="s0">countries</span><span class="s2">:</span>
+            <span class="s0">country_data </span><span class="s2">= </span><span class="s0">df</span><span class="s2">[</span><span class="s0">df</span><span class="s2">[</span><span class="s3">'Country/Region'</span><span class="s2">] == </span><span class="s0">country</span><span class="s2">]</span>
+            <span class="s0">plt</span><span class="s2">.</span><span class="s0">plot</span><span class="s2">(</span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'date'</span><span class="s2">], </span><span class="s0">country_data</span><span class="s2">[</span><span class="s3">'total_vaccinations'</span><span class="s2">], </span><span class="s0">label</span><span class="s2">=</span><span class="s0">country</span><span class="s2">)</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">title</span><span class="s2">(</span><span class="s3">'Total Vaccinations Over Time'</span><span class="s2">)</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">xlabel</span><span class="s2">(</span><span class="s3">'Date'</span><span class="s2">)</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">ylabel</span><span class="s2">(</span><span class="s3">'Total Vaccinations'</span><span class="s2">)</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">legend</span><span class="s2">()</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">tight_layout</span><span class="s2">()</span>
+        <span class="s0">plt</span><span class="s2">.</span><span class="s0">show</span><span class="s2">()</span>
+
+        <span class="s0">latest </span><span class="s2">= </span><span class="s0">df</span><span class="s2">.</span><span class="s0">groupby</span><span class="s2">(</span><span class="s3">'Country/Region'</span><span class="s2">).</span><span class="s0">last</span><span class="s2">()</span>
+        <span class="s0">latest</span><span class="s2">[</span><span class="s3">'vaccination'</span><span class="s2">]()</span>
+
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s1">\n </span><span class="s3">Summary Insights:&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;- India has the highest number of total cases and deaths among the three countries.&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;- China shows moderate case numbers with a relatively high number of recoveries.&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;- Tanzania has the lowest reported cases and deaths but also fewer recoveries compared to the others.&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;- The death rate varies across countries, likely influenced by testing and healthcare differences.&quot;</span><span class="s2">)</span>
+    <span class="s0">print</span><span class="s2">(</span><span class="s3">&quot;- Vaccination progress and daily new cases trends should be analyzed to understand the current situation better.&quot;</span><span class="s2">)</span><hr class="ls0"><span class="s0">#%% 
+</span></pre>
+</body>
+</html>
