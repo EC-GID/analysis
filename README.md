@@ -22,6 +22,5 @@ Tools and Libraries Used
 How to Run/View the Project
 1. Clone or download this repository
 2. Install required dependencies:
-   
-bash
+   bash
    pip install pandas numpy matplotlib seaborn plotly
